@@ -1,0 +1,45 @@
+version: '2'
+services:
+  hks:
+    restart: always
+    image: php:fpm-alpine
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "9000"
+    links:
+      - redis
+      - mysql
+    environment:
+      - VIRTUAL_HOST=hks.jianxun.io
+      - VIRTUAL_PROTO=fastcgi
+      - VIRTUAL_ROOT=/var/www/html
+      - SERVICE_NAME=app
+
+  redis:
+    restart: always
+    image: redis:alpine
+
+  mysql:
+    restart: always
+    image: mysql:5.7
+    ports:
+      - "0.0.0.0:33064:3306"
+    volumes:
+      - ./data/mysql/data:/var/lib/mysql
+      - ./data/mysql/conf.d:/etc/mysql/conf.d
+    environment:
+      MYSQL_ROOT_PASSWORD: 'huntcoder2018'
+      TZ: 'Asia/Shanghai'
+
+  proxy:
+    image: jwilder/nginx-proxy:alpine
+    ports:
+      - "8082:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./hks.jianxun.io:/etc/nginx/vhost.d/hks.jianxun.io:ro
+      - ./public:/var/www/html:ro
+
+
+
