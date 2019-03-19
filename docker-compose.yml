@@ -12,7 +12,7 @@ services:
       - "9000"
     links:
       - redis
-      - mysql
+      - pgsql
     environment:
       - VIRTUAL_HOST=hks.jianxun.io
       - VIRTUAL_ROOT=/var/www/html
@@ -22,16 +22,16 @@ services:
     restart: always
     image: redis:alpine
 
-  mysql:
+  pgsql:
     restart: always
-    image: mysql:5.7
+    image: postgres:alpine
     ports:
-      - "0.0.0.0:33064:3306"
+      - "5432"
     volumes:
-      - ./data/mysql/data:/var/lib/mysql
-      - ./data/mysql/conf.d:/etc/mysql/conf.d
+      - ./data/postgres/data:/var/lib/postgresql/data
     environment:
-      MYSQL_ROOT_PASSWORD: 'huntcoder2018'
+      POSTGRES_PASSWORD: 'huntcoder2018'
+      POSTGRES_USER: 'root'
       TZ: 'Asia/Shanghai'
 
   proxy:
