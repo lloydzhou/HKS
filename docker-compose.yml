@@ -2,7 +2,7 @@ version: '2'
 services:
   hks:
     restart: always
-    image: php:fpm-alpine
+    image: php:alpine
     volumes:
       - ./:/var/www/html
     ports:
@@ -12,9 +12,8 @@ services:
       - mysql
     environment:
       - VIRTUAL_HOST=hks.jianxun.io
-      - VIRTUAL_PROTO=fastcgi
       - VIRTUAL_ROOT=/var/www/html
-      - SERVICE_NAME=app
+    command: ["php", "-S", "0.0.0.0:9000", "-t", "/var/www/html/public", "/var/www/html/server.php"]
 
   redis:
     restart: always
@@ -38,8 +37,6 @@ services:
       - "8082:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./hks.jianxun.io:/etc/nginx/vhost.d/hks.jianxun.io:ro
-      - ./public:/var/www/html:ro
 
 
 
