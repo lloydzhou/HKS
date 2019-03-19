@@ -2,7 +2,10 @@ version: '2'
 services:
   hks:
     restart: always
-    image: php:alpine
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    # image: php:alpine
     volumes:
       - ./:/var/www/html
     ports:
